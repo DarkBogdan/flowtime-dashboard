@@ -1,0 +1,1978 @@
+/* =====================================================
+            ROOT VARIABLES
+   ===================================================== */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Base colors */
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #222222;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+
+  /* Primary brand */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+
+ /* Header buttons */
+  --header-primary: #4f46e5;
+  --header-primary-hover: #4338ca;
+
+/* UI helpers */
+  --hover: rgba(79, 70, 229, 0.08);
+  --accent: #6366f1;
+
+/* Status colors */
+  --status-working-bg: #e6f4ea;
+  --status-working-text: #1e7f4f;
+  --status-dayoff-bg: #fff4e5;
+  --status-dayoff-text: #a15c00;
+  --status-sick-bg: #fdecea;
+  --status-sick-text: #b42318;
+  --status-terminated-bg: #f2f2f2;
+  --status-terminated-text: #555;
+
+/* Time clock */
+   --timer-active-color: #000000;
+
+/* Loader */
+  --loader-bg: #ffffff;
+  
+/* Clock effects */ 
+  --clock-glow-1: rgba(56, 189, 248, 0.0);   
+  --clock-glow-2: rgba(30, 144, 255, 0.85); 
+  --clock-glow-3: rgba(30, 144, 255, 0.55);
+
+  --clock-armed-fill: rgba(56, 189, 248, 0.25);
+  --clock-armed-border: rgba(6, 182, 212, 0.5);
+
+/* Layout */
+  --header-height: 72px;
+}
+
+/* =====================================================
+      DARK THEME VARIABLES (OVERRIDES ONLY)
+   ===================================================== */
+
+html.dark {
+  --bg: #0f172a;
+  --card: #111827;
+  --text: #e5e7eb;
+  --text-muted: #9ca3af;
+  --border: #1f2933;
+
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+
+  --hover: rgba(99, 102, 241, 0.15);
+
+  --status-working-bg: rgba(34, 197, 94, 0.18);
+  --status-working-text: #4ade80;
+
+  --status-dayoff-bg: rgba(251, 191, 36, 0.18);
+  --status-dayoff-text: #fbbf24;
+
+  --status-sick-bg: rgba(239, 68, 68, 0.2);
+  --status-sick-text: #f87171;
+
+  --status-terminated-bg: rgba(148, 163, 184, 0.18);
+  --status-terminated-text: #cbd5e1;
+
+  --timer-active-color: #e5e7eb;
+
+  --loader-bg: #0f172a;
+  --accent: #38bdf8;
+
+  --clock-glow-1: rgba(56, 189, 248, 0.35);
+  --clock-glow-2: rgba(56, 189, 248, 0.22);
+  --clock-glow-3: rgba(56, 189, 248, 0.1);
+
+    --clock-armed-fill: rgba(56, 189, 248, 0.35);
+  --clock-armed-border: rgba(56, 189, 248, 0.6);
+
+}   
+
+/* =====================================================
+      BASE HTML / BODY
+   ===================================================== */
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* =====================================================
+      GLOBAL UI ELEMENTS
+   ===================================================== */
+
+.hidden {
+  display: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Inputs */
+input,
+select {
+  background-color: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input.error,
+select.error {
+  border: 1.5px solid #e53935;
+  outline: none;
+}
+
+input.error:focus,
+select.error:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.15);
+}
+
+/* =====================================================
+      APP PRELOADER
+   ===================================================== */
+
+.app-preloader {
+  pointer-events: all;
+  position: fixed;
+  inset: 0;
+  background: var(--loader-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .4s ease, visibility .4s ease;
+}
+
+.app-preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Loader animation intentionally isolated */
+.loader-orbit {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.loader-orbit span {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform-origin: -12px -12px;
+  animation: orbit 1.2s linear infinite;
+}
+
+.loader-orbit span:nth-child(2) { animation-delay: .15s; opacity: .6 }
+.loader-orbit span:nth-child(3) { animation-delay: .3s; opacity: .4 }
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translate(16px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translate(16px) rotate(-360deg);
+  }
+}
+
+.table-wrapper,
+.modal-content,
+.auth-card,
+.login-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+
+/* =====================================================
+      HEADER
+   ===================================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  height: var(--header-height);
+  background-color: var(--card);
+  border-bottom: 1px solid var(--border);
+
+  display: flex;                    
+  align-items: center;
+  justify-content: space-between;    
+  padding: 0 24px;
+}
+
+/* Brand */
+.header-brand {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  max-height: 42px;         
+  width: auto;
+  display: block;
+}
+
+html.dark .brand-logo {
+  content: url("assets/main-logo-dark-theme.png");
+}
+
+.brand-text {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--text);
+  white-space: nowrap; 
+}
+
+
+
+@media (max-width: 640px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-brand {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 641px) {
+  .header {
+    flex-wrap: nowrap;
+  }
+
+  .header-brand {
+    width: auto;
+    justify-content: flex-start;
+  }
+
+  .header-actions {
+    width: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .header-actions .logout-btn,
+  .header-actions .theme-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 10px;
+
+    width: 44px;         
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-actions .logout-btn:hover,
+  .header-actions .theme-btn:hover {
+    background: var(--hover);
+    border-color: var(--primary);
+  }
+}
+
+@media (max-width: 640px) {
+  .brand-text {
+    display: none;
+  }
+}
+
+/* =====================================================
+      BUTTONS
+   ===================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  background-color: var(--primary);
+  color: #ffffff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Header primary buttons */
+.header-btn {
+  background-color: var(--header-primary);
+  color: #fff;
+
+  box-shadow:
+    0 4px 10px rgba(79, 70, 229, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.12s ease,
+    background-color 0.15s ease;
+}
+
+.header-btn.is-disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+
+  box-shadow: none;
+  transform: none;
+}
+
+/* =====================================================
+      LAYOUT & SPA PAGES
+   ===================================================== */
+
+.page-viewport {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding-top: var(--header-height);
+}
+
+/* All pages are stacked */
+.page {
+  position: absolute;
+  inset: 0;
+
+   overflow-y: auto;   
+  overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; 
+
+  opacity: 1;
+  transform: translateY(0) scale(1);
+
+  transition:
+    opacity 280ms ease,
+    transform 280ms ease;
+}
+
+.page.is-hidden {
+  opacity: 0;
+  transform: translateY(8px) scale(0.985);
+  pointer-events: none;
+}
+
+/* =====================================================
+      TABLES (DESKTOP)
+   ===================================================== */
+
+.table-wrapper {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+
+/* collapsed borders for clean grid appearance */
+table {
+  width: 100%;
+  border-collapse: collapse; 
+}
+/* Shared cell styles for headers and data cells. */
+th,
+td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  color: var(--text);
+}
+
+
+/* ==========================================================================
+   TABLE ACTION BUTTONS
+   Small action buttons and icons used inside tables
+   ========================================================================== */
+
+.btn-icon {
+  color: #fff;           
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.btn:hover {
+  background-color: #4338ca;
+}
+
+
+/* ==========================================================================
+   HEADER BUTTON STATES
+   ========================================================================== */
+
+.header-btn:hover {
+  background-color: var(--header-primary-hover);
+  box-shadow:
+    0 6px 16px rgba(79, 70, 229, 0.35),
+    0 3px 6px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.header-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    0 3px 8px rgba(79, 70, 229, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.15);
+}
+/* Active state indicates current page */
+.header-btn.is-active {
+  background-color: #4338ca;
+  box-shadow:
+    0 6px 16px rgba(79, 70, 229, 0.35),
+    0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ==========================================================================
+   SECONDARY BUTTONS
+   Neutral buttons used for non-primary actions
+   ========================================================================== */
+
+.btn-secondary {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px 14px;
+  transition: background 0.15s ease;
+}
+
+.btn-secondary:hover {
+   background: var(--hover);
+  border-radius: 4px;
+  color: var(--text);
+}
+
+/* Loader indicator inside buttons */
+.btn-loader {
+  margin-left: 8px;
+}
+
+
+/* ==========================================================================
+   APPLICATION LAYOUT
+   ========================================================================== */
+
+main.container {
+  height: calc(100vh - 78px); /* header height */
+  overflow: hidden;
+}
+
+.container {
+   width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+}
+
+
+/* ==========================================================================
+   PAGE CONTENT WRAPPERS
+   ========================================================================== */
+
+#employeesPage .page-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 32px 48px;
+}
+
+#timeClockPage .page-content {
+  width: 100%;
+  max-width: none;
+  padding: 32px 64px 48px;
+}
+
+/* Tablet adjustments */
+@media (max-width: 768px) {
+  #timeClockPage .page-content {
+    padding: 24px 16px 32px;
+  }
+}
+
+
+/* ==========================================================================
+   FILTERS & SEARCH CONTROLS
+   Filters toolbar used above tables
+   ========================================================================== */
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+ /* Mobile-friendly filter layout */
+@media (max-width: 640px) {
+  .filters {
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
+  .filters > * {
+    width: 100%;
+  }
+
+  .filters .clear-filters {
+    text-align: center;
+  }
+}
+
+/* Shared input styles inside filters */
+.filters input,
+.filters select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+/* Highlighted search matches */
+mark {
+  background-color: #fff3cd;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+
+/* ==========================================================================
+   TABLE
+   Responsive behavior, row interactions and animations
+   ========================================================================== */
+
+/*
+  Enable horizontal scroll for tables on tablets and smaller screens.
+  Prevents layout breaking when table has many columns.
+*/
+@media (max-width: 768px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 700px;
+  }
+}
+
+/* Table header cells styling.
+  Keeps header visually consistent with card background. */
+th {
+ background-color: var(--card);
+  font-weight: bold;
+  color: var(--text);
+}
+
+/* Remove bottom border for the last row to avoid double borders.*/
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* Compact buttons used inside table rows (Edit / Delete). */
+table .btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  background-color: #f3f4f6;
+  color: #111;
+  border-radius: 6px;
+}
+
+table .btn:hover {
+  background-color: #e5e7eb;
+}
+
+/* Smooth fade + slide animation when a row is added or updated. */
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Applied dynamically via JS when rendering rows. */
+tr.row-animate {
+  animation: rowIn 220ms ease-out;
+}
+
+
+/* Highlight row background on hover for better readability. */
+tr:hover td {
+  background-color: var(--hover);
+}
+
+/* Container for action buttons inside a row.
+  Initially semi-transparent to reduce visual noise. */
+.table-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.table-actions .btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  color: #111;
+}
+
+/* Accessibility: visible focus state for keyboard navigation. */
+.table-actions .btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.35);
+}
+
+.table-actions .btn:hover {
+  background: #e5e7eb;
+}
+
+/* Delete action styled as destructive but subtle by default. */
+.table-actions .btn-delete {
+  background: transparent;
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.table-actions .btn-delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Make actions fully visible only on row hover. */
+tr:hover .table-actions {
+  opacity: 1;
+}
+
+
+/* ==========================================================================
+   STATUS BADGES
+   Visual indicators for employee status
+   ========================================================================== */
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+   min-width: 96px;
+   text-align: center;
+}
+
+/* Individual status variants use design tokens */
+.status-badge.working {
+  background: var(--status-working-bg);
+  color: var(--status-working-text);
+}
+
+.status-badge.day_off {
+  background: var(--status-dayoff-bg);
+  color: var(--status-dayoff-text);
+}
+
+.status-badge.sick {
+  background: var(--status-sick-bg);
+  color: var(--status-sick-text);
+}
+
+.status-badge.terminated {
+  background: var(--status-terminated-bg);
+  color: var(--status-terminated-text);
+}
+
+
+/* ==========================================================================
+   EMPTY STATE
+   Displayed when no data matches filters
+   ========================================================================== */
+
+.empty-state {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  white-space: pre-line;
+   line-height: 1.6;
+   background: rgba(79, 70, 229, 0.04); 
+  
+}
+
+
+/* ==========================================================================
+   EDIT EMPLOYEE MODAL
+   ========================================================================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100; 
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 8px;
+  width: 320px;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.modal-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+   text-align: right;
+}
+
+/* Disabled state for Continue button in Time Clock modal. */
+#continueTimeClockBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* ==========================================================================
+   TIME CLOCK MODAL
+   ========================================================================== */
+
+/* Reused modal positioning without background,
+  backdrop is handled separately.  */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1100; 
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+
+/* ==========================================================================
+   MODAL CARD
+   Central card container for time clock modal
+   ========================================================================== */
+
+.modal-card {
+  position: relative;
+  max-width: 420px;
+  margin: 10vh auto;
+
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+
+  border-radius: 16px;
+  padding: 24px;
+
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+
+/* ==========================================================================
+   MODAL HEADER
+   Title, description and icon area
+   ========================================================================== */
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2,
+.modal-header p {
+  color: var(--text);
+}
+
+.modal-header .icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.modal-header p {
+  margin: 4px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+
+/* ==========================================================================
+   DEPARTMENT SELECTION
+   Buttons used to select department before starting a shift
+   ========================================================================== */
+
+.department-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.department-btn {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  color: var(--text);
+}
+
+.department-btn:hover {
+  background: var(--hover);
+  border-color: #4f6ef7;
+  color: #4f6ef7;
+}
+
+.department-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.department-btn:active {
+  transform: scale(0.98);
+}
+
+
+/* ==========================================================================
+   MODAL CLOSE BUTTON
+   Top-right close icon
+   ========================================================================== */
+
+.modal-actions {
+  text-align: right;
+}
+
+.btn-secondary {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+}
+
+.modal-close:hover {
+  color: #111;
+}
+
+
+/* ==========================================================================
+   TIME CLOCK HEADER & LIVE TIMER
+   Displays current session state and elapsed time
+   ========================================================================== */
+
+.clock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/*Main live timer display.*/
+#liveTimer {
+  font-size: 32px;
+  font-weight: 600;
+    letter-spacing: 2px;
+  transition: color 0.3s ease;
+}
+/* subtle pulsing animation to indicate running session */
+.timer-running #liveTimer {
+  color: var(--timer-active-color);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+
+/* ==========================================================================
+   CLOCK BUTTON (BASE)
+   Main action button for starting / stopping a work session
+   ========================================================================== */
+
+.clock-btn {
+
+  position: relative;
+  isolation: isolate;  /* prevents glow layers from leaking outside */
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2bb0ed, #4adede);
+  color: #fff;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin: 32px auto;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.3s ease;
+}
+
+
+/* ==========================================================================
+   CLOCK BUTTON — ARMED STATE
+   Visual "ready" state before starting a shift
+   ========================================================================== */
+
+ /* Outer glowing ring indicating readiness to start. */
+.clock-btn.armed::after {
+  content: "";
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    transparent 38%,
+    var(--clock-glow-2) 48%,
+    var(--clock-glow-3) 62%,
+    rgba(0, 0, 0, 0) 74%
+  );
+
+  animation: pulseRing 2.2s ease-out infinite;
+  z-index: -1;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Ambient breathing animation when button is armed. */
+.clock-btn.armed {
+  animation:
+    ambientPulse 2.4s ease-in-out infinite,
+    buttonBreath 2.4s ease-in-out infinite;
+}
+
+@keyframes buttonBreath {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.clock-btn:hover {
+  transform: scale(1.05);
+}
+
+
+/* ==========================================================================
+   CLOCK BUTTON — ACTIVE STATE
+   Indicates an active working session
+   ========================================================================== */
+
+.clock-btn.active {
+background: linear-gradient(135deg, #ef4444, #f97316);
+box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
+
+animation: breathe 2s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%   { box-shadow: 0 0 20px rgba(239,68,68,0.4); }
+  50%  { box-shadow: 0 0 45px rgba(239,68,68,0.8); }
+  100% { box-shadow: 0 0 20px rgba(239,68,68,0.4); }
+}
+
+
+/* ==========================================================================
+   TIMER APPEAR ANIMATION
+   Smooth slide-in when timer starts
+   ========================================================================== */
+
+.timer-start {
+  animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+/* ==========================================================================
+   TIMESHEET TABLE
+   Logged work sessions table
+   ========================================================================== */
+
+#timesheetTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 32px;
+}
+
+#timesheetTable th,
+#timesheetTable td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+
+/* ==========================================================================
+   BACK NAVIGATION LINK
+   Returns user from Time Clock to Employees page
+   ========================================================================== */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+
+  font-size: 15px;
+  font-weight: 500;
+  color: #4f46e5;
+
+  background: transparent;
+  cursor: pointer;
+
+  transition: background 0.2s ease, color 0.2s ease;
+  transition: opacity 150ms ease;
+}
+
+.back-link:hover {
+  background: rgba(79, 70, 229, 0.08); 
+  color: #4338ca;
+}
+
+.back-icon {
+  transition: transform 0.2s ease;
+}
+
+.back-link:hover .back-icon {
+  transform: translateX(-3px);
+}
+
+/* Keyboard accessibility */
+.back-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+}
+
+
+/* ==========================================================================
+   SORTABLE TABLE HEADERS
+   Sorting indicators and interactions
+   ========================================================================== */
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sort-indicator {
+  margin-left: 6px;
+  font-size: 12px;
+  opacity: 0.3;
+  transition: opacity 0.15s ease;
+}
+
+.sort-indicator.asc::after {
+  content: "▲";
+}
+
+.sort-indicator.desc::after {
+  content: "▼";
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border-radius: 6px;
+}
+
+.sortable:hover {
+  background-color: #f3f4f6;
+  color: #4f46e5;
+}
+
+.sortable:hover .sort-indicator {
+  opacity: 1;
+}
+
+.sortable:active {
+  background-color: #e5e7eb;
+}
+
+
+/* ==========================================================================
+   LOGIN PAGE
+   ========================================================================== */
+
+.login-page {
+  position: fixed;        
+  inset: 0;
+  z-index: 1000;
+
+pointer-events: all;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #fae8ff 100%);
+}
+
+/* Dark theme override */
+html.dark .login-page {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+}
+
+/* ==========================================================================
+   LOGIN CARD
+   ========================================================================== */
+
+.login-card {
+  width: 380px;
+  padding: 36px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+/* Logo displayed above login form */
+.login-logo {
+  display: block;       
+  margin: 0 auto 24px;  
+  width: 64px;          
+  height: auto;         
+  
+}
+/* Page title */
+.login-title {
+  color: var(--text);
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   LOGIN FORM FIELDS
+   ========================================================================== */
+
+.login-field {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+/* Input fields base styling */
+.login-field input {
+  background: var(--card);
+   color: var(--text);
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+/* Focus state with accessible focus ring */
+.login-field input:focus {
+  color: var(--text-muted);
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+/* Validation error state */
+.login-field input.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+}
+/* Inline validation message */
+.field-error {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+  display: block;
+}
+
+
+/* ==========================================================================
+   LOGIN BUTTON
+   Primary authentication action
+   ========================================================================== */
+
+.login-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-btn:hover {
+  background: #4338ca;
+}
+
+/* Disabled state while submitting */
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Prevent background scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+
+/* ==========================================================================
+   AUTH MODAL
+   Displays login success or error feedback
+   ========================================================================== */
+
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-modal.hidden {
+  display: none;
+}
+
+/* Dark overlay behind modal */
+.auth-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* Auth result card */
+.auth-card {
+  position: relative;
+  z-index: 1;
+
+  width: 360px;
+  padding: 32px;
+  border-radius: 16px;
+
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+
+  text-align: center;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+
+  animation: scaleIn 0.2s ease;
+}
+
+/* Entry animation */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.auth-card h3,
+.auth-card p {
+  color: var(--text);
+}
+
+.auth-card h3 {
+  margin: 12px 0 6px;
+  font-size: 20px;
+}
+
+.auth-card p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.auth-back-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+
+  background: var(--card);
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.auth-back-btn:hover {
+  background: var(--hover);
+}
+
+.auth-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 16px;
+
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.auth-icon.success {
+  background: #e6f4ea;
+  color: #1e7f4f;
+}
+
+.auth-icon.error {
+  background: #fdecea;
+  color: #b42318;
+}
+
+.login-page.hidden {
+  display: none;
+  pointer-events: none;
+}
+
+/* Shake animation for invalid login */
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-6px); }
+  40%  { transform: translateX(6px); }
+  60%  { transform: translateX(-4px); }
+  80%  { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+.auth-card.shake {
+  animation: shake 0.4s ease;
+}
+
+
+/* ==========================================================================
+   HEADER ACTIONS
+   Logout and theme toggle buttons
+   ========================================================================== */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 1;
+}
+
+.logout-btn {
+  width: 40px;
+  height: 40px;
+
+  background: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  color: var(--text); 
+  
+  display: grid;
+  place-items: center;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.logout-btn:hover {
+  background: var(--hover);
+  color: var(--text);       
+  transform: translateX(-2px);
+}
+
+.logout-btn:active {
+  transform: translateX(-4px);
+}
+
+/* svg */
+.logout-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+#confirmLogoutBtn {
+  background: #ef4444;
+}
+
+#confirmLogoutBtn:hover {
+  background: #dc2626;
+}
+
+/* Theme toggle button */
+.theme-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  transition: background 0.15s ease;
+}
+
+.theme-btn:hover {
+  background: var(--hover);
+}
+
+/*Generic danger button
+  Used for destructive actions (confirm logout, delete, etc.)*/
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+
+/* ==========================================================================
+   CLOCK BUTTON — ARMED STATE
+   Pre-start state before active time tracking
+   ========================================================================== */
+
+.clock-btn.armed {
+  
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: #fff;
+ 
+  box-shadow: 0 10px 20px -5px rgba(6, 182, 212, 0.4);
+  
+  animation: armed-breath 2s ease-in-out infinite;
+  
+  position: relative;
+  z-index: 1;
+}
+
+/* Ripple layers rendered behind the button */
+.clock-btn.armed::before,
+.clock-btn.armed::after {
+  content: "";
+  position: absolute;
+
+  inset: 0; 
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0;
+}
+
+/* Inner glow ripple */
+.clock-btn.armed::before {
+  background: var(--clock-armed-fill); 
+  animation: compact-ripple 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+/* Outer ring ripple */
+.clock-btn.armed::after {
+  border: 1px solid var(--clock-armed-border); 
+  animation: compact-ripple 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation-delay: 0.4s; 
+}
+
+/* Breathing animation for armed state */
+@keyframes armed-breath {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02); 
+  }
+}
+
+/* Ripple expansion animation */
+@keyframes compact-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.4; 
+  }
+  100% {
+    transform: scale(1.35); 
+    opacity: 0;
+  }
+}
+
+/* Hide back navigation when page is transitioning */
+.page.is-hidden .back-link {
+  opacity: 0;
+}
+
+/* Standard page content spacing */
+.page-content {
+  padding: 40px 32px 48px;
+}
+
+/* Remove extra margin from first child */
+.page-content > :first-child {
+  margin-top: 0;
+}
+
+/* Slightly reduced top padding for time clock page */
+.time-clock-page .page-content {
+  padding-top: 20px;
+}
+
+
+/* ==========================================================================
+   MODAL ANIMATIONS
+   Backdrop fade + modal scale-in
+   ========================================================================== */
+
+/* Backdrop fade-in with subtle blur */   
+@keyframes fadeInBackdrop {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to   { opacity: 1; backdrop-filter: blur(2px); }
+}
+
+/* Modal scale + lift animation */
+@keyframes scaleUpModal {
+  from { 
+    opacity: 0;
+    transform: scale(0.95) translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1) translateY(0); 
+  }
+}
+
+/* Apply backdrop animation */
+.modal:not(.hidden),
+.auth-modal:not(.hidden) {
+  animation: fadeInBackdrop 0.18s ease-out forwards;
+}
+
+/* Apply scale animation to modal cards */
+.modal:not(.hidden) .modal-content,
+.modal:not(.hidden) .modal-card,
+.auth-modal:not(.hidden) .auth-card {
+
+  animation: scaleUpModal 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  
+  backface-visibility: hidden; 
+  will-change: transform, opacity;
+}
+
+/* Auth card manages its animation manually */
+.auth-card {
+  animation: none; 
+}
+
+
+/* ==========================================================================
+   CUSTOM SELECT COMPONENT
+   Replaces native <select> with styled dropdown
+   ========================================================================== */
+
+.custom-select {
+  position: relative;
+  width: 180px;
+}
+
+/* Select trigger button */
+.select-trigger {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  cursor: pointer;
+}
+
+.select-trigger:hover {
+  background: var(--hover);
+}
+
+.select-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.35);
+}
+
+/* Dropdown panel */
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+
+  overflow: hidden;
+  display: none;
+  z-index: 50;
+}
+
+/* Open state */
+.custom-select.open .select-dropdown {
+  display: block;
+}
+/* Dropdown option */
+.option {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.option:hover {
+  background: var(--hover);
+}
+
+.option.active {
+  font-weight: 600;
+}
+/* Arrow indicator */
+.select-arrow {
+  font-size: 20px;     
+  margin-left: 8px;
+  opacity: 0.7;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.custom-select.open .select-arrow {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.custom-select.open .select-trigger {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.15);
+}
+
+
+/* ==========================================================================
+   MOBILE TABLE (TIME CLOCK)
+   Converts table rows into card-like layout
+   ========================================================================== */
+
+@media (max-width: 640px) {
+ 
+  #timeClockPage #timesheetTable {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important; 
+    box-sizing: border-box !important;
+  }
+
+  #timeClockPage #timesheetTable tbody,
+  #timeClockPage #timesheetTable tr,
+  #timeClockPage #timesheetTable td {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #timeClockPage #timesheetTable thead {
+    display: none !important;
+  }
+
+  #timeClockPage #timesheetTable tr {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  #timeClockPage #timesheetTable td {
+    display: flex !important;              
+    justify-content: space-between !important; 
+    align-items: center !important;        
+    
+    padding: 12px 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+    min-height: 44px;
+    text-align: right !important;
+  }
+
+  #timeClockPage #timesheetTable td:last-child {
+    border-bottom: none !important;
+  }
+
+  #timeClockPage #timesheetTable td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    margin-right: 12px;
+  }
+
+  #timeClockPage #timesheetTable td .cell-value {
+    display: block !important;
+    color: var(--text) !important; 
+    font-weight: 500;
+    text-align: right !important;
+    
+    
+    flex-shrink: 0 !important; 
+    width: auto !important;
+    max-width: 60%; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Header Time clock (disabled) */
+  .header-btn.is-disabled {
+    opacity: 1;                 
+    background-color: #8f8be8;  
+    box-shadow: none;
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    width: 100%;
+  }
+
+  #timeClockBtn {
+    grid-column: 1 / 2;
+  }
+
+  #addEmployeeBtn {
+    grid-column: 2 / 3;
+  }
+
+  #logoutBtn {
+    grid-column: 1 / 2;
+  }
+
+  #themeToggleBtn {
+    grid-column: 2 / 3;
+  }
+
+  #logoutBtn {
+    justify-self: end;
+  }
+
+  #themeToggleBtn {
+    justify-self: start;
+  }
+  
+  #timeClockBtn,
+  #addEmployeeBtn {
+    padding: 8px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 400px) {
+  :root {
+    --header-height: 112px;
+  }
+}
+
+@media (max-width: 400px) {
+  .login-page {
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .login-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .auth-modal,
+  .modal {
+    padding: 16px;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 400px) {
+  .auth-card,
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+
+
+
+
+
+
+
+
+

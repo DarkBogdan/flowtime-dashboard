@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Flowtime</title>
+    <meta name="description" content="HR dashboard for employee management, time tracking, and leave requests." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+   <link rel="icon" href="assets/main-logo-no-text.png">
+   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<!-- Theme initialization (prevent flash) -->
+    <script>
+  (function () {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    }
+  })();
+</script>
+
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/app.js"></script>
+</head>
+
+<body>
+
+<!-- ======  APP PRELOADER  =======-->
+  
+  <div id="appPreloader" class="app-preloader">
+
+  <div class="loader-orbit">
+  <span></span><span></span><span></span>
+</div>
+</div>
+
+<!-- =====  LOGOUT CONFIRM MODAL  ====== -->
+
+  <div
+  id="logoutModal"
+  class="auth-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="logoutTitle"
+>
+  <div class="auth-overlay"></div>
+
+  <div class="auth-card">
+    <div class="auth-icon error">⎋</div>
+
+    <h3 id="logoutTitle">Log out</h3>
+    <p>Are you sure you want to log out?</p>
+
+    <div class="modal-actions">
+      <button id="cancelLogoutBtn" class="btn-secondary">
+        Cancel
+      </button>
+
+      <button id="confirmLogoutBtn" class="btn">
+        Log out
+      </button>
+    </div>
+  </div>
+</div>
+  
+<!-- =========  APP ROOT  =========== -->
+
+<div id="app">
+
+<!-- =======  LOGIN PAGE  ======== -->
+
+<div id="loginPage" class="login-page">
+<div class="login-card">
+  <img 
+      src="assets/main-logo-no-text.png" 
+      alt="Logo" 
+      class="login-logo"
+    />
+
+  <h2 class="login-title">Sign in</h2>
+
+  <div class="login-field">
+    <input id="loginInput" type="text" placeholder="Email or username" />
+    <span id="loginError" class="field-error"></span>
+  </div>
+
+  <div class="login-field">
+    <input id="passwordInput" type="password" placeholder="Password" />
+    <span id="passwordError" class="field-error"></span>
+  </div>
+
+  <button id="loginBtn" class="login-btn">Sign in</button>
+</div>
+</div>
+
+
+<!-- =======  AUTH RESULT MODAL  ======== -->
+
+<div
+  id="authResultModal"
+  class="auth-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="authTitle"
+>
+  <div class="auth-overlay"></div>
+
+  <div class="auth-card">
+    <div id="authIcon" class="auth-icon"></div>
+    <h3 id="authTitle"></h3>
+    <p id="authMessage"></p>
+
+    <button id="authBackBtn" class="auth-back-btn">
+      Back
+    </button>
+  </div>
+</div>
+
+  <!-- ======  APP CONTENT (AFTER LOGIN)  ======= -->
+
+<div id="appContent" class="hidden">
+
+    <!-- ========  HEADER  ======== -->
+
+  <header class="header">
+
+<a
+  href="#"
+  class="header-brand"
+  id="homeLink"
+  aria-label="Go to Employees"
+>
+  <img
+    src="assets/main-logo.png"
+    alt="Flowtime"
+    class="brand-logo"
+  />
+  <span class="visually-hidden">Flowtime</span>
+</a>
+
+
+    <div class="header-actions">
+      <button id="timeClockBtn" class="btn btn-outline header-btn">
+        ⏱ Time clock
+      </button>
+
+      <button id="addEmployeeBtn" class="btn btn-primary header-btn">
+        <span class="btn-icon">+</span>
+        Add employee
+      </button>
+
+<button id="logoutBtn" class="logout-btn" title="Log out">
+  <svg
+    class="logout-icon"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      d="M14 4L18 4C19.1046 4 20 4.89543 20 6V18C20 19.1046 19.1046 20 18 20H14M3 12L15 12M3 12L7 8M3 12L7 16"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+  </svg>
+</button>
+   
+<button id="themeToggleBtn" class="theme-btn" title="Toggle theme">
+  <span class="theme-icon">🌙</span>
+</button>
+    </div>
+
+  </header>
+
+  <!-- =========  MAIN CONTENT  =========== -->
+
+  <main class="container">
+
+    <div id="pageViewport" class="page-viewport">
+
+     <!-- ========  EMPLOYEES PAGE  ========= -->     
+
+    <section id="employeesPage" class="page is-hidden">
+<div class="page-content">
+
+      <!-- Filters -->
+      <section class="filters">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by name"
+        />
+
+<div class="custom-select" data-select="status">
+  <button class="select-trigger">
+    <span class="select-value">All statuses</span>
+    <span class="select-arrow">▾</span>
+  </button>
+
+  <div class="select-dropdown">
+    <div class="option" data-value="all">All statuses</div>
+    <div class="option" data-value="working">Working</div>
+    <div class="option" data-value="day_off">Day off</div>
+    <div class="option" data-value="sick">Sick leave</div>
+    <div class="option" data-value="terminated">Terminated</div>
+  </div>
+
+  <!-- legacy select-hidden -->
+  <select id="statusFilter" hidden>
+    <option value="all">All statuses</option>
+    <option value="working">Working</option>
+    <option value="day_off">Day off</option>
+    <option value="sick">Sick leave</option>
+    <option value="terminated">Terminated</option>
+  </select>
+</div>
+
+<div class="custom-select" data-select="department">
+  <button class="select-trigger">
+    <span class="select-value">All departments</span>
+    <span class="select-arrow">▾</span>
+  </button>
+
+  <div class="select-dropdown">
+    <div class="option" data-value="all">All departments</div>
+    <div class="option" data-value="IT">IT</div>
+    <div class="option" data-value="HR">HR</div>
+    <div class="option" data-value="Finance">Finance</div>
+    <div class="option" data-value="Marketing">Marketing</div>
+  </div>
+
+  <!-- legacy select-hidden -->
+  <select id="departmentFilter" hidden>
+    <option value="all">All departments</option>
+    <option value="IT">IT</option>
+    <option value="HR">HR</option>
+    <option value="Finance">Finance</option>
+    <option value="Marketing">Marketing</option>
+  </select>
+</div>
+
+        <button id="clearFiltersBtn" class="btn btn-secondary">
+          Clear filters
+        </button>
+      </section>
+
+      <!-- Employees table -->
+      <section class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th id="sortByName" class="sortable">
+  Name
+  <span class="sort-indicator">↕</span>
+</th>
+
+              <th>Position</th>
+              <th>Department</th>
+              <th>Status</th>
+<th id="sortByHireDate" class="sortable">
+  Hire date <span class="sort-indicator">↕</span>
+</th>
+
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="employeesTbody">
+            <!-- rows from JS -->
+          </tbody>
+        </table>
+      </section>
+
+    </section>
+
+  <!-- ===============  TIME CLOCK PAGE  =============== -->
+
+    <section id="timeClockPage" class="page is-hidden time-clock-page">
+
+      <div class="page-content">
+
+<!-- Back navigation -->
+<button id="backToEmployees" class="back-link">
+  <svg
+    class="back-icon"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M15 18l-6-6 6-6" />
+  </svg>
+  <span>Back to Employees</span>
+</button>
+
+
+<!-- Clock header -->
+  <div class="clock-header">
+    <h2>Today's clock</h2>
+    <div id="liveTimer">00:00:00</div>
+  </div>
+
+<!-- Clock action -->
+  <button id="clockBtn" class="clock-btn">
+    Clock in
+  </button>
+
+ <!-- Timesheet table -->
+  <table id="timesheetTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Department</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+</div>
+
+</div>
+</section>
+</div>
+  </main>
+
+  <!-- ===========  MODALS  ============ -->
+
+  <!-- EDIT EMPLOYEE MODAL -->
+  <div id="editModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Edit employee</h3>
+
+      <label>
+        Name
+        <input type="text" id="editName" />
+        <span id="editNameError" class="field-error"></span>
+      </label>
+
+      <label>
+        Position
+        <input type="text" id="editPosition" />
+        <span id="editPositionError" class="field-error"></span>
+      </label>
+
+      <label>
+        Department
+        <select id="editDepartment">
+          <option value="IT">IT</option>
+          <option value="HR">HR</option>
+          <option value="Finance">Finance</option>
+          <option value="Marketing">Marketing</option>
+        </select>
+      </label>
+
+      <label>
+        Status
+        <select id="editStatus">
+          <option value="working">Working</option>
+          <option value="day_off">Day off</option>
+          <option value="sick">Sick leave</option>
+          <option value="terminated">Terminated</option>
+        </select>
+      </label>
+
+      <div class="modal-actions">
+        <button id="cancelEditBtn" class="btn btn-secondary">
+          Cancel
+        </button>
+        <button id="saveEditBtn" class="btn">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE EMPLOYEE MODAL -->
+  <div id="confirmModal" class="auth-modal hidden">
+  <div class="auth-overlay"></div>
+
+  <div class="auth-card">
+    <div id="confirmIcon" class="auth-icon error">!</div>
+
+    <h3 id="confirmTitle"></h3>
+    <p id="confirmMessage"></p>
+
+    <div class="modal-actions">
+      <button id="confirmCancelBtn" class="btn-secondary">Cancel</button>
+      <button id="confirmOkBtn" class="btn btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+ <!-- ADD EMPLOYEE MODAL -->
+<div id="addEmployeeModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Add employee</h3>
+
+    <label>
+      Name
+      <input type="text" id="addName" />
+      <span class="field-error" id="addNameError"></span>
+    </label>
+
+    <label>
+      Position
+      <input type="text" id="addPosition" />
+       <span class="field-error" id="addPositionError"></span>
+    </label>
+
+    <label>
+      Department
+      <select id="addDepartment">
+        <option value="IT">IT</option>
+        <option value="HR">HR</option>
+        <option value="Finance">Finance</option>
+        <option value="Marketing">Marketing</option>
+      </select>
+    </label>
+
+    <label>
+      Status
+      <select id="addStatus">
+        <option value="working">Working</option>
+        <option value="day_off">Day off</option>
+        <option value="sick">Sick leave</option>
+        <option value="terminated">Terminated</option>
+      </select>
+    </label>
+
+    <label>
+      Hire date
+      <input type="date" id="addHireDate" />
+    </label>
+
+    <div class="modal-actions">
+      <button id="cancelAddEmployee" class="btn btn-secondary">
+        Cancel
+      </button>
+      <button id="saveAddEmployee" class="btn">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- TIME CLOCK MODAL -->
+  <div
+  id="timeClockModal"
+  class="modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="timeClockModalTitle"
+>
+    <div class="modal-backdrop"></div>
+
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close modal">✕</button>
+
+      <div class="modal-header">
+        <div class="icon">⏱</div>
+        <h2 id="timeClockModalTitle">Time Clock</h2>
+        <p>Select department</p>
+      </div>
+
+      <div class="department-list">
+        <button class="department-btn">IT</button>
+        <button class="department-btn">HR</button>
+        <button class="department-btn">Finance</button>
+        <button class="department-btn">Marketing</button>
+      </div>
+
+      <div class="modal-actions">
+        <button id="closeTimeClock" class="btn btn-secondary">
+          Close
+        </button>
+
+        <button id="continueTimeClockBtn" class="btn" disabled>
+          <span class="btn-text">Continue</span>
+          <span class="btn-loader hidden">•••</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+</body>
+</html>
