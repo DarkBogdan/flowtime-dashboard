@@ -6,8 +6,9 @@ The project focuses on clean UI architecture, predictable state management, and 
 
 ---
 
-Live Demo
-[Open Flowtime Dashboard]([https://skill-tree-phi-vgkqh1i8dl.vercel.app](https://darkbogdan.github.io/flowtime-dashboard)
+## Live Demo
+
+[Open Flowtime Dashboard](https://darkbogdan.github.io/flowtime-dashboard)
 
 ## Features
 
