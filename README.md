@@ -10,6 +10,11 @@ The project focuses on clean UI architecture, predictable state management, and 
 
 [Open Flowtime Dashboard](https://darkbogdan.github.io/flowtime-dashboard)
 
+> **💡 Demo Access**
+> To explore the full functionality of the dashboard, please use the following test credentials:
+> - **Username:** `admin`
+> - **Password:** `admin123`
+
 ## Features
 
 - Client-side authentication with session persistence
